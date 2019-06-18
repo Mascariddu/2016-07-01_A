@@ -1,9 +1,13 @@
 package it.polito.tdp.formulaone;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.formulaone.model.Driver;
 import it.polito.tdp.formulaone.model.Model;
+import it.polito.tdp.formulaone.model.Season;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -21,7 +25,7 @@ public class FormulaOneController {
     private URL location;
 
     @FXML
-    private ComboBox<?> boxAnno;
+    private ComboBox<Season> boxAnno;
 
     @FXML
     private TextField textInputK;
@@ -32,11 +36,35 @@ public class FormulaOneController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
 
+    	txtResult.clear();
+    	Season anno = this.boxAnno.getValue();
+    	
+    	if(anno != null) {
+    		
+    		model.creaGrafo(anno);
+    		txtResult.appendText(model.pilotaMigliore().toString());
+    		
+    	} else txtResult.appendText("Seleziona una stagione!");
+    	
     }
 
     @FXML
     void doTrovaDreamTeam(ActionEvent event) {
 
+    	txtResult.clear();
+    	
+    	try {
+    		
+    		int k = Integer.parseInt(textInputK.getText());
+    		List<Driver> migliori = new ArrayList<Driver>(model.trovaDreamTeam(k));
+    		for(Driver driver : migliori)
+    			txtResult.appendText(driver.toString()+" con tasso: "+model.getTasso(driver, migliori)+"\n");
+    		txtResult.appendText("Tasso: "+model.getTasso(model.trovaDreamTeam(k)));
+    		
+    	} catch(NumberFormatException e) {
+    		e.printStackTrace();
+    		txtResult.appendText("Inserisci un valore numerico!");
+    	}
     }
 
     @FXML
@@ -49,5 +77,6 @@ public class FormulaOneController {
     
     public void setModel(Model model){
     	this.model = model;
+    	this.boxAnno.getItems().addAll(model.getSeasons());
     }
 }
