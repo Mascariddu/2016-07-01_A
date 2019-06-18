@@ -110,6 +110,7 @@ public class Model {
 			return;
 		}
 		
+		
 		for(Driver driver : grafo.vertexSet()) {
 			if(!parziale.contains(driver)) {
 				
